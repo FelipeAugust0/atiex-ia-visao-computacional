@@ -2,24 +2,34 @@
 
 Experiência local para o SENAI São Carlos: home educativa, **polichinelos** e **números com a mão** no navegador. HTML/CSS/JavaScript sem React; FastAPI, OpenCV e MediaPipe no Python. Sem login, banco de dados, CDN ou gravação de visitantes.
 
-## Instalação no Windows PowerShell
+## Instalação no Windows (Python 3.14)
 
-Use **Python 3.12 de 64 bits**. Na raiz do repositório, com internet antes da feira:
+Use **Python 3.14 de 64 bits**, na instalação padrão (sem free-threading). Na raiz do repositório, com internet antes da feira:
+
+1. Abra `instalar.cmd`: cria `.venv314`, instala as dependências e prepara os modelos. Se houver erro, a instalação para e mantém a mensagem visível.
+2. Abra `iniciar.cmd` e mantenha a janela aberta.
+3. Acesse **http://localhost:8000** e permita a câmera quando solicitado.
+
+Esses arquivos também funcionam por duplo clique, sem ativar ambiente nem alterar a política de scripts do PowerShell. O Python 3.14 precisa estar instalado; isto ainda não é um executável portátil.
+
+### Instalação manual
+
+No PowerShell ou CMD:
 
 ```powershell
-py -3.12 -m venv .venv
-.\.venv\Scripts\python.exe -m pip install -r app/requirements.txt
-.\.venv\Scripts\python.exe -m app.prepare_models
+py -3.14 -m venv .venv314
+.\.venv314\Scripts\python.exe -m pip install -r app/requirements.txt
+.\.venv314\Scripts\python.exe -m app.prepare_models
 ```
 
-Alternativa com uv: `uv venv --python 3.12 .venv` e `uv pip install --python .venv/Scripts/python.exe -r app/requirements.txt`. Não precisa ativar o ambiente. Não use Python 3.14/3.15 com estas versões.
+Alternativa com uv: `uv venv --python 3.14 .venv314` e `uv pip install --python .venv314/Scripts/python.exe -r app/requirements.txt`. Não precisa ativar o ambiente. No PyCharm, selecione `.venv314/Scripts/python.exe` como interpretador. Uma `.venv` antiga de Python 3.12 pode ser mantida; não é usada por estes iniciadores. Python 3.15 não foi validado.
 
 Os três modelos estão em `app/models/`. A preparação preserva modelos existentes e baixa somente modelos MediaPipe ausentes. **O servidor não baixa modelos**: mostra o arquivo ausente na interface. Para substituir um modelo corrompido, mova-o para backup e execute a preparação novamente. Preserve o YOLO original em `app/models/yolo11n.pt`.
 
 ## Iniciar com um comando
 
 ```powershell
-.\.venv\Scripts\python.exe -m uvicorn app.server:app --host 127.0.0.1 --port 8000 --ws-max-size 450000 --ws-max-queue 1
+.\.venv314\Scripts\python.exe -m uvicorn app.server:app --host 127.0.0.1 --port 8000 --ws-max-size 450000 --ws-max-queue 1
 ```
 
 Abra **http://localhost:8000**. Alternativa: `./run.ps1`, que também configura cache local para Matplotlib. `Ctrl+C` encerra o servidor.
@@ -45,16 +55,16 @@ Encerrar, mudar de página ou esconder a aba fecha tracks e WebSocket. Permissã
 ## Exemplos de terminal preservados
 
 ```powershell
-.\.venv\Scripts\python.exe -m app.vagas
-.\.venv\Scripts\python.exe -m app.contadorPolichinelos
-.\.venv\Scripts\python.exe -m app.contadorPolichinelos 0
+.\.venv314\Scripts\python.exe -m app.vagas
+.\.venv314\Scripts\python.exe -m app.contadorPolichinelos
+.\.venv314\Scripts\python.exe -m app.contadorPolichinelos 0
 ```
 
 Shopping tem dependências opcionais mais pesadas:
 
 ```powershell
-.\.venv\Scripts\python.exe -m pip install -r app/requirements-examples.txt
-.\.venv\Scripts\python.exe -m app.escadas
+.\.venv314\Scripts\python.exe -m pip install -r app/requirements-examples.txt
+.\.venv314\Scripts\python.exe -m app.escadas
 ```
 
 O exemplo shopping força modo offline, desliga instalação automática e sincronização do Ultralytics, e usa configuração local em `.artifacts/ultralytics`.
@@ -78,15 +88,19 @@ O servidor valida tamanho da mensagem, ID, frequência, origem e dimensões JPEG
 ## Testes
 
 ```powershell
-.\.venv\Scripts\python.exe -m pytest -q
-.\.venv\Scripts\python.exe -m tests.validate_video
-.\.venv\Scripts\python.exe -m app.vagas --headless --max-frames 30
-.\.venv\Scripts\python.exe -m app.escadas --headless --max-frames 20
+.\.venv314\Scripts\python.exe -m pytest -q
+.\.venv314\Scripts\python.exe -m tests.validate_video
+.\.venv314\Scripts\python.exe -m app.vagas --headless --max-frames 30
+.\.venv314\Scripts\python.exe -m app.escadas --headless --max-frames 20
 ```
 
 Leia [VALIDACAO.md](VALIDACAO.md) para evidências e roteiro manual. Geometria sintética não mede precisão do modelo em visitantes reais. Compilação não equivale a teste de webcam.
 
-Versões instaladas e testadas: Python 3.12.15, FastAPI 0.115.12, Uvicorn 0.34.2, MediaPipe 0.10.21, NumPy 1.26.4 e OpenCV 4.11.0. Exemplo opcional: Ultralytics 8.3.40, Torch 2.14.1, Torchvision 0.29.1 e LAP 0.5.12. Dependências diretas estão fixadas; transitivas podem variar. MediaPipe requer o pacote OpenCV contrib; o exemplo YOLO também declara opencv-python, fixado na mesma versão para manter os binários compatíveis. Evite atualizar apenas um deles isoladamente.
+A migração usa Python **3.14**, MediaPipe **0.10.35**, OpenCV contrib **4.14.0.94**, NumPy **2.5.4**, Pillow **12.3.0** e Pytest **9.1.1**. FastAPI 0.115.12, Uvicorn 0.34.2 e HTTPX 0.28.1 foram mantidos. As evidências e os limites dos testes estão em [VALIDACAO.md](VALIDACAO.md); os resultados anteriores de Python 3.12 ficam registrados como histórico.
+
+As dependências diretas estão fixadas; transitivas podem variar. O exemplo opcional de shopping usa LAP **0.5.13**, com pacotes para Python 3.14, e mantém Ultralytics 8.3.40, Torch 2.14.1 e Torchvision 0.29.1. MediaPipe declara OpenCV contrib e Ultralytics declara opencv-python; ambos ficam fixados na mesma versão. É uma limitação das dependências opcionais existentes: evite atualizar somente um pacote OpenCV. O shopping precisa de validação separada, além das duas experiências do navegador.
+
+O workflow `.github/workflows/python314.yml` instala o ambiente em Windows x64 com Python 3.14 e executa a suíte com modelos reais e o vídeo de polichinelos. Esse teste não acessa a webcam física.
 
 ## Arquivos preservados e duplicados
 

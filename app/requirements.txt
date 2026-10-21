@@ -1,8 +1,8 @@
 fastapi==0.115.12
 uvicorn[standard]==0.34.2
-mediapipe==0.10.21
-opencv-contrib-python==4.11.0.86
-numpy==1.26.4
-pillow==11.2.1
+mediapipe==0.10.35
+opencv-contrib-python==4.14.0.94
+numpy==2.5.4
+pillow==12.3.0
 httpx==0.28.1
-pytest==8.3.5
+pytest==9.1.1

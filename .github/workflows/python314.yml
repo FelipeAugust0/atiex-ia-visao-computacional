@@ -1,0 +1,31 @@
+name: Python 3.14 no Windows
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: windows-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.14'
+          architecture: x64
+          cache: pip
+          cache-dependency-path: app/requirements.txt
+      - name: Instalar dependencias
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install --only-binary=:all: -r app/requirements.txt
+          python -m pip check
+      - name: Testar modelos, servidor e regras
+        run: python -m pytest -q
+      - name: Processar video real de polichinelos
+        run: python -m tests.validate_video

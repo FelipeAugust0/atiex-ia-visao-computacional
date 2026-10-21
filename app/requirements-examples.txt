@@ -1,6 +1,6 @@
 -r requirements.txt
 ultralytics==8.3.40
-lap==0.5.12
+lap==0.5.13
 torch==2.14.1
 torchvision==0.29.1
-opencv-python==4.11.0.86
+opencv-python==4.14.0.94
