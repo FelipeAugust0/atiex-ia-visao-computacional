@@ -1,6 +1,19 @@
 # Validação e roteiro para a feira
 
-Executado em Windows, Python 3.12.15. Este relatório distingue testes automatizados, vídeo real e testes manuais pendentes.
+Este relatório distingue testes automatizados, vídeo real e testes manuais pendentes. As seções históricas abaixo foram registradas em Windows com Python 3.12.15.
+
+## Migração para Python 3.14 — 21/10/2026
+
+- Ambiente isolado criado com CPython **3.14.8**, Linux x86-64. Instalação efetiva das versões fixadas no novo `app/requirements.txt` concluída; `uv pip check` não encontrou incompatibilidades.
+- **43 testes passaram**, incluindo criação dos detectores reais de mãos e pose, inferência de imagens vazias via WebSocket, separação de sessões, rejeição de mensagens inválidas, fechamento dos detectores, páginas, vídeo e regras geométricas. Não foram substituídos os modelos por mocks para fazer a suíte passar.
+- Vídeo original de polichinelos: **172 quadros lidos, 57 amostras com pose detectada e 7 ciclos reconhecidos**. Esse resultado é a saída do detector; não é uma anotação humana de referência.
+- A resolução de dependências com `uv pip compile --python-version 3.14 --python-platform windows --only-binary=:all:` passou tanto para `app/requirements.txt` quanto para `app/requirements-examples.txt`. Isso confirma a disponibilidade de pacotes para Windows x64/Python 3.14; não equivale à execução no Windows.
+- MediaPipe passou de 0.10.21 para **0.10.35**, OpenCV para **4.14.0.94**, NumPy para **2.5.4**, Pillow para **12.3.0** e Pytest para **9.1.1**. LAP opcional passou para **0.5.13**, porque a versão 0.5.12 não possuía pacote binário utilizável no alvo Windows/Python 3.14. As APIs Tasks usadas em `app/vision.py` continuaram funcionando, sem alteração das regras de contagem.
+- A infraestrutura Linux precisou de `libGLESv2.so.2` para carregar o MediaPipe. A biblioteca foi extraída de `libgles2` do Ubuntu e usada apenas no ambiente de teste, sem acrescentar arquivos de sistema ao aplicativo.
+- Foram preparados `instalar.cmd` e `iniciar.cmd`, que usam `.venv314` e preservam a `.venv` anterior. Os scripts CMD e `run.ps1` ainda precisam ser executados no Windows. O workflow `Python 3.14 no Windows` verifica automaticamente a suíte e o vídeo quando executado pelo GitHub Actions; consulte o resultado da execução antes de considerar o Windows validado.
+- **Pendentes:** webcam física, interação visual no navegador, execução dos iniciadores no Windows e inferência YOLO do shopping com as novas dependências. O shopping foi verificado quanto à resolução dos pacotes, sem reinstalar/executar PyTorch neste ambiente. Os avisos de depreciação de FastAPI/Starlette não impediram os testes.
+
+Os resultados seguintes ficam preservados como histórico da versão anterior.
 
 ## Revisão da leitura após teste do usuário
 
